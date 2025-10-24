@@ -1,12 +1,21 @@
 import express from "express";
+import cors from "cors";
+import { PrismaClient } from "@prisma/client";
 
-const port = 4000;
+import categoryRoutes from "./routes/categoryRoutes.js";
+import drinkRoutes from "./routes/drinkRoutes.js";
+
 const app = express();
+const prisma = new PrismaClient();
 
-app.get("/", (req, res) => {
-    res.send("Listagem de Bebidas")
-})
+app.use(cors());
+app.use(express.json());
 
-app.listen(port, () => {
-    console.log(`Servidor rodando na porta ${port}`)
-});
+app.get("/", (req, res) => res.send("API funcionando 🚀"));
+
+// Rotas
+app.use("/categories", categoryRoutes(prisma));
+app.use("/drinks", drinkRoutes(prisma));
+
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => console.log(`Server rodando na porta ${PORT}`));
